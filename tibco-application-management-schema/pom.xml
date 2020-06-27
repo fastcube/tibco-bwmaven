@@ -114,9 +114,6 @@
 								<goals>
 									<goal>sign</goal>
 								</goals>
-								<!-- <configuration>
-									<passphraseServerId>fc.gpg</passphraseServerId>
-								</configuration> -->
 							</execution>
 						</executions>
 					</plugin>
