@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://www.tibco.com/pe/EngineTypes" xmlns:UUID="java://Java.GenerateRandomUUID" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:pfx="http://www.tibco.com/schemas/CommonProjlib/Schemas/Schema.xsd">
+    <pd:name>__bwProjectName__/SampleJMSProcess.process</pd:name>
+    <pd:startName>JMSQueueReceiver</pd:startName>
+    <pd:startX>0</pd:startX>
+    <pd:startY>0</pd:startY>
+    <pd:returnBindings/>
+    <pd:starter name="JMSQueueReceiver">
+        <pd:type>com.tibco.plugin.jms.JMSQueueEventSource</pd:type>
+        <pd:resourceType>ae.activities.JMSQueueEventSource</pd:resourceType>
+        <pd:x>80</pd:x>
+        <pd:y>55</pd:y>
+        <config>
+            <PermittedMessageType>Text</PermittedMessageType>
+            <SessionAttributes>
+                <transacted>false</transacted>
+                <acknowledgeMode>1</acknowledgeMode>
+                <maxSessions>1</maxSessions>
+                <destination>%%JMS/JMS_START_QUEUE%%</destination>
+            </SessionAttributes>
+            <ConfigurableHeaders>
+                <JMSDeliveryMode>PERSISTENT</JMSDeliveryMode>
+                <JMSExpiration>0</JMSExpiration>
+                <JMSPriority>4</JMSPriority>
+            </ConfigurableHeaders>
+            <ConnectionReference>/Connections/JMSConnection.sharedjmscon</ConnectionReference>
+        </config>
+        <pd:inputBindings/>
+    </pd:starter>
+    <pd:endName>End</pd:endName>
+    <pd:endX>524</pd:endX>
+    <pd:endY>164</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables>
+        <flow_id>
+            <xsd:element name="flow_id" type="xsd:string"/>
+        </flow_id>
+    </pd:processVariables>
+    <pd:targetNamespace>http://xmlns.example.com/1601818013448</pd:targetNamespace>
+    <pd:activity name="AssignFlowID">
+        <pd:type>com.tibco.pe.core.AssignActivity</pd:type>
+        <pd:resourceType>ae.activities.assignActivity</pd:resourceType>
+        <pd:x>206</pd:x>
+        <pd:y>55</pd:y>
+        <config>
+            <variableName>flow_id</variableName>
+        </config>
+        <pd:inputBindings>
+            <flow_id>
+                <xsl:value-of select="UUID:generateUUID()"/>
+            </flow_id>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Catch">
+        <pd:type>com.tibco.pe.core.CatchActivity</pd:type>
+        <pd:resourceType>ae.activities.catch</pd:resourceType>
+        <pd:x>315</pd:x>
+        <pd:y>164</pd:y>
+        <pd:handler>true</pd:handler>
+        <config>
+            <catchAll>true</catchAll>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="LogEntry">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>315</pd:x>
+        <pd:y>55</pd:y>
+        <config>
+            <processName>/ProcessDefinitions/SendToLog.process</processName>
+        </config>
+        <pd:inputBindings>
+            <pfx:log_content>
+                <pfx:log_status>
+                    <xsl:value-of select="'ENTRY'"/>
+                </pfx:log_status>
+                <pfx:start_timestamp>
+                    <xsl:value-of select="current-dateTime()"/>
+                </pfx:start_timestamp>
+                <pfx:flow_id>
+                    <xsl:value-of select="$flow_id/flow_id"/>
+                </pfx:flow_id>
+                <pfx:message>
+                    <xsl:value-of select="'Starting Main Process...'"/>
+                </pfx:message>
+            </pfx:log_content>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="LogError">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>413</pd:x>
+        <pd:y>164</pd:y>
+        <config>
+            <processName>/ProcessDefinitions/SendToLog.process</processName>
+        </config>
+        <pd:inputBindings>
+            <pfx:log_content>
+                <pfx:log_status>
+                    <xsl:value-of select="'ERROR'"/>
+                </pfx:log_status>
+                <pfx:start_timestamp>
+                    <xsl:value-of select="current-dateTime()"/>
+                </pfx:start_timestamp>
+                <pfx:flow_id>
+                    <xsl:value-of select="$flow_id/flow_id"/>
+                </pfx:flow_id>
+                <pfx:message>
+                    <xsl:value-of select="$_error/ns:ErrorReport/Msg"/>
+                </pfx:message>
+                <xsl:if test="$_error/ns:ErrorReport/MsgCode">
+                    <pfx:message_code>
+                        <xsl:value-of select="$_error/ns:ErrorReport/MsgCode"/>
+                    </pfx:message_code>
+                </xsl:if>
+                <xsl:if test="$_error/ns:ErrorReport/StackTrace">
+                    <pfx:stack_trace>
+                        <xsl:value-of select="$_error/ns:ErrorReport/StackTrace"/>
+                    </pfx:stack_trace>
+                </xsl:if>
+                <xsl:if test="$_error/ns:ErrorReport/Class">
+                    <pfx:class>
+                        <xsl:value-of select="$_error/ns:ErrorReport/Class"/>
+                    </pfx:class>
+                </xsl:if>
+                <xsl:if test="$_error/ns:ErrorReport/FullClass">
+                    <pfx:full_class>
+                        <xsl:value-of select="$_error/ns:ErrorReport/FullClass"/>
+                    </pfx:full_class>
+                </xsl:if>
+                <xsl:if test="$_error/ns:ErrorReport/ProcessStack">
+                    <pfx:process_stack>
+                        <xsl:value-of select="$_error/ns:ErrorReport/ProcessStack"/>
+                    </pfx:process_stack>
+                </xsl:if>
+            </pfx:log_content>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="LogExit">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>524</pd:x>
+        <pd:y>55</pd:y>
+        <config>
+            <processName>/ProcessDefinitions/SendToLog.process</processName>
+        </config>
+        <pd:inputBindings>
+            <pfx:log_content>
+                <pfx:log_status>
+                    <xsl:value-of select="'EXIT'"/>
+                </pfx:log_status>
+                <pfx:end_timestamp>
+                    <xsl:value-of select="current-dateTime()"/>
+                </pfx:end_timestamp>
+                <pfx:flow_id>
+                    <xsl:value-of select="$flow_id/flow_id"/>
+                </pfx:flow_id>
+                <pfx:message>
+                    <xsl:value-of select="'Exit Main Process...'"/>
+                </pfx:message>
+            </pfx:log_content>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="MainProcess">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>413</pd:x>
+        <pd:y>55</pd:y>
+        <config>
+            <processName>/__bwProjectName__/MainProcess.process</processName>
+        </config>
+        <pd:inputBindings>
+            <flow_id>
+                <xsl:value-of select="$flow_id/flow_id"/>
+            </flow_id>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>JMSQueueReceiver</pd:from>
+        <pd:to>AssignFlowID</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>AssignFlowID</pd:from>
+        <pd:to>LogEntry</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>LogEntry</pd:from>
+        <pd:to>MainProcess</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>MainProcess</pd:from>
+        <pd:to>LogExit</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>LogExit</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Catch</pd:from>
+        <pd:to>LogError</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>LogError</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

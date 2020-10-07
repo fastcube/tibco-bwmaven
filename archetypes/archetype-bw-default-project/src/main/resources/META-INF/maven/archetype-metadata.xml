@@ -34,16 +34,24 @@
 		<requiredProperty key="rootProjectVersion">
 			<defaultValue>${factoryVersion}</defaultValue>
 		</requiredProperty>
+
+		<requiredProperty key="tibcoHostname">
+			<defaultValue>${tibco.hostname}</defaultValue>
+		</requiredProperty>
 	</requiredProperties>
 	<fileSets>
 		<fileSet encoding="UTF-8" filtered="true" packaged="false">
 			<directory></directory>
 			<includes>
 				<include>designer*</include>
+				<include>add-interface*</include>
 			</includes>
 		</fileSet>
 		<fileSet encoding="UTF-8" filtered="true" packaged="false">
 			<directory>src</directory>
+		</fileSet>
+		<fileSet encoding="UTF-8" filtered="true" packaged="false">
+			<directory>properties</directory>
 		</fileSet>
 	</fileSets>
 </archetype-descriptor>

@@ -29,6 +29,9 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+// import java.net.InetAddress;
+// import java.net.UnknownHostException;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -503,6 +506,11 @@ public class ApplicationManagement {
 
 				// machine
 				key = processKey + "/machine";
+				// try {
+				// 	result.setProperty(key, InetAddress.getLocalHost().getHostName());
+				// } catch (UnknownHostException e) {
+				// 	System.out.println(e);
+				// }
 				result.setProperty(key, binding.getMachine());
 
 				// product

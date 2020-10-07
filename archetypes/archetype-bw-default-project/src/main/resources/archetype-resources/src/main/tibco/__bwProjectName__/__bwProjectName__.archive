@@ -3,22 +3,18 @@
     <enterpriseArchive>
         <sharedArchive name="Shared Archive">
             <resourceType>shared.archive.resource</resourceType>
-            <authorProperty>author</authorProperty>
+            <authorProperty>FastConnect</authorProperty>
         </sharedArchive>
-        <processArchive name="${bwProjectName}">
+        <processArchive name="Process Archive">
             <resourceType>process.archive.resource</resourceType>
             <authorProperty/>
-            <processProperty>/${bwProjectName}/SimpleLoggerOnStartup.process</processProperty>
+            <processProperty>/ProcessDefinitions/LogINFO.process,/ProcessDefinitions/LogExit.process,/ProcessDefinitions/LogERROR.process,/ProcessDefinitions/LogEntry.process</processProperty>
         </processArchive>
         <versionProperty>1</versionProperty>
         <authorProperty/>
         <addServiceSettableGvars>true</addServiceSettableGvars>
         <name>${bwProjectName}</name>
-        <designer>
-            <lockedProperties/>
-            <fixedChildren/>
-            <resourceDescriptions/>
-        </designer>
+        <designer/>
         <fileLocationProperty>C:\temp\${bwProjectName}.ear</fileLocationProperty>
     </enterpriseArchive>
 </Repository:repository>

@@ -54,6 +54,10 @@
 		<requiredProperty key="putPOMInParentDirectory">
 			<defaultValue>true</defaultValue>
 		</requiredProperty>
+		
+		<requiredProperty key="tibcoHostname">
+			<defaultValue>${tibco.hostname}</defaultValue>
+		</requiredProperty>
 	</requiredProperties>
 	<fileSets>
 	</fileSets>

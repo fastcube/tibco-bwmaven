@@ -24,7 +24,7 @@
 	<groupId>${groupId}</groupId>
  	<artifactId>${artifactId}</artifactId>
  	<version>${version}</version>
-	<packaging>bw-ear</packaging>
+	<packaging>${projectPackaging}</packaging>
 
 	<parent>
 		<groupId>${rootProjectGroupId}</groupId>
@@ -36,10 +36,20 @@
 
 	<properties>
 		<bw.project.name>${bwProjectName}</bw.project.name>
+		<projectPackaging>bw-ear</projectPackaging>
 		<!-- here you can override the default TIBCO stack configuration and
 		     default project configuration found in 'fc-tibco-factory' -->
 	</properties>
 
+	<dependencies>
+		<dependency>
+		  <groupId>com.company.project</groupId>
+		  <artifactId>common-projlib</artifactId>
+		  <version>1.0.0-SNAPSHOT</version>
+		  <type>projlib</type>
+		</dependency>
+	</dependencies>
+	
 	<!-- If this POM inherits from a client root POM, this <build> section
 		 might be removed -->
 	<build>
